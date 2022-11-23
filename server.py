@@ -1,35 +1,35 @@
 import socket
-import argparse
-import sys
+import threading
 
 FORMAT = 'utf-8'
 CHAT_EXIT = "EXIT"
-SERVER = "0.0.0.0"
 
 
+class Connection():
+    def __init__(self) -> None:
+        self.server = socket.gethostbyname("localhost")
+        self.port = 5050
+
+def client_recv(client):
+    while True:
+        msg = client.recv(1024)
+        print(msg.decode(FORMAT))
+    
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('portNumber', help="Number 1", type=int)
-    args = parser.parse_args()
+    connection = Connection()
+    addr = (connection.server, connection.port)
 
-    PORT = args.portNumber
-    ADDR = (SERVER, PORT)
+    with(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as server:
+        print(f"Binding to {addr}")
+        server.bind(addr)
+        server.listen()
+        print(f"listening on {addr}")
 
-    with (socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as sock:
-        sock.bind(ADDR)
-        sock.listen()
-
-        conn, addr = sock.accept()
-        msg = b'cleared'
-        conn.send(msg)
-
-        connected = True
-        while connected:
-            recv_msg = conn.recv(1024).decode()
-            if recv_msg == CHAT_EXIT:
-                conn.close()
-            print(recv_msg)
-
+        while True:
+            client, address = server.accept()
+            print(f"{address} has joined the chat")
+            thread_recv = threading.Thread(target=client_recv, args=(client,),daemon=True)
+            thread_recv.start()
 
 if __name__ == "__main__":
     main()
