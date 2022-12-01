@@ -24,6 +24,7 @@ def client_recv(person):
             CLIENTS.remove(person)
             client.close()
             send_all_clients(f"{person.name} has left the chat")
+            break
             
         send_all_clients(f"{person.name}: {msg}")
 
