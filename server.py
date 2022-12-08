@@ -3,7 +3,7 @@ from threading import Thread
 from person import Person
 
 FORMAT = 'utf-8'
-CHAT_EXIT = "EXIT"
+CHAT_EXIT = "exit"
 BUFSZE = 512
 
 CLIENTS = []
@@ -20,7 +20,8 @@ def client_recv(person):
     while True:
         msg = client.recv(BUFSZE).decode(FORMAT)
 
-        if not msg or msg == CHAT_EXIT:
+        if not msg or msg == CHAT_EXIT.__add__('\n'):
+            person.client.send("exit".encode(FORMAT))
             CLIENTS.remove(person)
             client.close()
             send_all_clients(f"{person.name} has left the chat")
@@ -29,26 +30,22 @@ def client_recv(person):
         send_all_clients(f"{person.name}: {msg}")
 
 def get_name(client):
-    client.send("Enter name for the chat: ".encode(FORMAT))
-    msg = client.recv(BUFSZE).decode(FORMAT)
-
-    if not msg:
-        client.send("Invalid username.. EXITING".encode(FORMAT))
-        client.close()
-    else:
-        return msg
+    client.send("name".encode(FORMAT))
+    name = client.recv(BUFSZE).decode(FORMAT)
+    return name
 
 def handle_client(client, address):
     name = get_name(client)
-    person = Person(client=client, addr=address, name=name)
 
+    person = Person(client=client, addr=address, name=name)
     CLIENTS.append(person)
 
     send_all_clients(f"{person.name} has joined the chat\n")
-    client.send("To exit chat, type EXIT\n".encode(FORMAT))
 
     thread_recv = Thread(target=client_recv, args=(person,))
     thread_recv.start()
+        
+        
 
 
 def send_all_clients(msg):
