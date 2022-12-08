@@ -9,4 +9,4 @@ This program uses tkinter as a GUI for that chat.
 
 # What the chat system looks like
 
-https://github.com/mleno123/Chat-system-repo/blob/master/Chat.PNG
+![alt text](https://github.com/mleno123/Chat-system-repo/blob/master/Chat.PNG)
