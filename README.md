@@ -1,7 +1,11 @@
 # Chat system
 
-This is a chat system where a client and a server can chat.
+This is a chat system where multiple clients can connect to a server, and can chat to multiple clients connected in the server.
+This program uses tkinter as a GUI for that chat.
 
 # How to use
+1. Run server.py first 
+2. Run client.py to connect to the server. You can run client.py as many as you want.
 
-Run server.py first, then run client.py to connect
+# What the chat system looks like
+
